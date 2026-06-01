@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Grove at Towne Center — A Digital Ethnography</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #f5f0e8;
+      --ink: #1a1a18;
+      --forest: #2d4a2d;
+      --sage: #7a9e7a;
+      --rust: #b5522a;
+      --sand: #d4c8a8;
+      --light-sand: #ede6d3;
+      --white: #fafaf7;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--cream);
+      color: var(--ink);
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 300;
+      font-size: 18px;
+      line-height: 1.75;
+    }
+
+    /* ── NAV ─────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: var(--forest);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      height: 54px;
+    }
+    nav .site-title {
+      color: var(--sand);
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2.2rem;
+    }
+    nav ul a {
+      color: var(--sand);
+      text-decoration: none;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    nav ul a:hover { opacity: 1; }
+
+    /* ── HERO ────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      background: var(--forest);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 60% 40%, rgba(122,158,122,0.18) 0%, transparent 65%),
+                  radial-gradient(ellipse at 20% 80%, rgba(181,82,42,0.1) 0%, transparent 55%);
+    }
+    .hero-label {
+      color: var(--sage);
+      font-size: 0.75rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-bottom: 1.8rem;
+      position: relative;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 6vw, 5rem);
+      font-weight: 400;
+      color: var(--cream);
+      line-height: 1.15;
+      max-width: 820px;
+      position: relative;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--sage);
+    }
+    .hero-sub {
+      margin-top: 2rem;
+      color: var(--sand);
+      font-size: 1rem;
+      opacity: 0.75;
+      max-width: 520px;
+      position: relative;
+    }
+    .hero-meta {
+      margin-top: 3.5rem;
+      display: flex;
+      gap: 3rem;
+      position: relative;
+    }
+    .hero-meta span {
+      color: var(--sand);
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--sage);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .scroll-hint::after {
+      content: '';
+      width: 1px;
+      height: 40px;
+      background: var(--sage);
+      opacity: 0.5;
+      animation: scrollLine 1.8s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0%, 100% { transform: scaleY(1); opacity: 0.5; }
+      50% { transform: scaleY(0.4); opacity: 0.2; }
+    }
+
+    /* ── SECTIONS ────────────────────────────────────── */
+    section {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+    section.full-bleed {
+      max-width: 100%;
+      padding: 0;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 48px;
+      height: 1px;
+      background: var(--rust);
+      opacity: 0.5;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 2rem;
+      color: var(--ink);
+    }
+
+    p { margin-bottom: 1.4rem; color: #2e2e2a; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── DIVIDER ─────────────────────────────────────── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--sand);
+      margin: 0 2rem;
+    }
+
+    /* ── PULLQUOTE ───────────────────────────────────── */
+    .pullquote {
+      border-left: 3px solid var(--forest);
+      margin: 2.5rem 0;
+      padding: 1.2rem 0 1.2rem 2rem;
+    }
+    .pullquote p {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-style: italic;
+      color: var(--forest);
+      line-height: 1.5;
+      margin-bottom: 0.5rem;
+    }
+    .pullquote cite {
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--sage);
+      font-style: normal;
+    }
+
+    /* ── MAP EMBED ───────────────────────────────────── */
+    .map-section {
+      background: var(--light-sand);
+      padding: 5rem 2rem;
+    }
+    .map-section > * { max-width: 780px; margin-left: auto; margin-right: auto; }
+    .map-wrapper {
+      margin-top: 2rem;
+      border: 1px solid var(--sand);
+      overflow: hidden;
+      border-radius: 2px;
+    }
+    .map-wrapper iframe {
+      width: 100%;
+      height: 420px;
+      display: block;
+      border: none;
+    }
+    .map-caption {
+      font-size: 0.82rem;
+      color: #6a6a62;
+      margin-top: 0.8rem;
+      font-style: italic;
+    }
+
+    /* ── PHOTO GRID ──────────────────────────────────── */
+    .photo-section {
+      background: var(--ink);
+      padding: 5rem 2rem;
+    }
+    .photo-section > .inner { max-width: 780px; margin: 0 auto; }
+    .photo-section .section-label { color: var(--sage); }
+    .photo-section h2 { color: var(--cream); }
+    .photo-section p { color: var(--sand); opacity: 0.8; }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-top: 2rem;
+    }
+    .photo-placeholder {
+      background: #2a2a26;
+      aspect-ratio: 4/3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed #444;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .photo-placeholder:hover { background: #333; }
+    .photo-placeholder span {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #666;
+    }
+    .photo-placeholder .icon { font-size: 1.4rem; opacity: 0.3; }
+    .photo-placeholder.tall { grid-row: span 2; aspect-ratio: auto; }
+
+    /* ── INTERVIEW ───────────────────────────────────── */
+    .interview-section {
+      background: var(--white);
+    }
+
+    .interview-card {
+      background: var(--forest);
+      color: var(--cream);
+      padding: 3rem;
+      margin: 2.5rem 0;
+      position: relative;
+    }
+    .interview-card::before {
+      content: '\201C';
+      font-family: 'Playfair Display', serif;
+      font-size: 6rem;
+      color: var(--sage);
+      opacity: 0.3;
+      position: absolute;
+      top: 0.5rem;
+      left: 1.5rem;
+      line-height: 1;
+    }
+    .interview-card p {
+      color: var(--cream);
+      font-size: 1.05rem;
+      line-height: 1.8;
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    .interview-card .interviewee {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-top: 1.5rem;
+      margin-bottom: 0;
+    }
+
+    .qa-block { margin: 2rem 0; }
+    .qa-block .question {
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 0.5rem;
+      font-family: 'Source Serif 4', serif;
+    }
+    .qa-block .answer {
+      padding-left: 1rem;
+      border-left: 2px solid var(--sand);
+    }
+
+    /* ── SOURCES ─────────────────────────────────────── */
+    .sources-section {
+      background: var(--light-sand);
+    }
+    .source-item {
+      padding: 1.8rem 0;
+      border-bottom: 1px solid var(--sand);
+    }
+    .source-item:last-child { border-bottom: none; }
+    .source-item .source-title {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--forest);
+      margin-bottom: 0.4rem;
+    }
+    .source-item .source-meta {
+      font-size: 0.8rem;
+      color: #6a6a62;
+      margin-bottom: 0.8rem;
+      letter-spacing: 0.03em;
+    }
+    .source-item p {
+      font-size: 0.92rem;
+      color: #3a3a36;
+    }
+
+    /* ── FOOTER ──────────────────────────────────────── */
+    footer {
+      background: var(--ink);
+      color: var(--sand);
+      text-align: center;
+      padding: 3rem 2rem;
+    }
+    footer p {
+      font-size: 0.8rem;
+      color: var(--sand);
+      opacity: 0.5;
+      margin-bottom: 0.3rem;
+    }
+    footer p:last-child { margin-bottom: 0; }
+
+    /* ── FADE IN ─────────────────────────────────────── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <span class="site-title">The Grove — Snellville</span>
+    <ul>
+      <li><a href="#context">Context</a></li>
+      <li><a href="#fieldwork">Fieldwork</a></li>
+      <li><a href="#interview">Interview</a></li>
+      <li><a href="#sources">Sources</a></li>
+      <li><a href="#comments">Comments</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="hero-label">Digital Heritage Ethnography &nbsp;&bull;&nbsp; ENG 1101</p>
+    <h1>The Center <em>Snellville</em> Never Had</h1>
+    <p class="hero-sub">A study of community, identity, and placemaking at The Grove at Towne Center in Snellville, Georgia.</p>
+    <div class="hero-meta">
+      <span>Jonathan Bell</span>
+      <span>May 2026</span>
+      <span>Gwinnett County, GA</span>
+    </div>
+    <div class="scroll-hint">Scroll</div>
+  </div>
+
+  <!-- CONTEXT -->
+  <section id="context" class="fade-in">
+    <p class="section-label">Background</p>
+    <h2>A city without a center</h2>
+    <p>Suburban communities across the United States have long struggled with one major issue: creating a distinct identity and a walkable gathering place within environments dominated by strip malls, parking lots, and disconnected commercial corridors. Snellville, Georgia, a city of approximately 21,000 residents located northeast of Atlanta, is no exception. For decades, Snellville lacked a true downtown district. There was no centralized area where residents could work, shop, dine, and connect. Instead, much of the city developed around heavily congested roadways lined with commercial developments, chain restaurants, and large parking lots — what many urban planners would describe as a "stroad."</p>
+    <p>This began to change with the development of The Grove at Towne Center, a $140 million mixed-use project built on eighteen acres in the center of the city. Formed through a public-private partnership between the City of Snellville, Gwinnett County, MidCity Real Estate Partners, and CASTO, the development includes more than 50,000 square feet of retail, restaurant, office, and entertainment space, a luxury residential complex called The Tomlin, and the new Elizabeth H. Williams branch of the Gwinnett Public Library.</p>
+
+    <div class="pullquote">
+      <p>"Borrowing principles from other theories, practitioners built the complete community idea bottom-up, as a persuasive rhetorical vehicle for describing planning intentions and justifying higher densities in positive ways."</p>
+      <cite>Grant, Journal of the American Planning Association (2024)</cite>
+    </div>
+
+    <p>The Grove was intentionally designed to address what Snellville had lacked for decades. But the emergence of a mixed-use town center in a traditionally suburban community raises important questions. Does the development truly create the sense of community and belonging it promises? How do residents perceive its impact on Snellville's identity and economic future? And what role does the public-private partnership model play in shaping those outcomes?</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- MAP -->
+  <div class="map-section full-bleed fade-in">
+    <div>
+      <p class="section-label">Location</p>
+      <h2>Positioned at the center</h2>
+      <p>The Grove sits at the intersection of Oak Road, Wisteria Drive, North Road, and Clower Street — within walking distance of South Gwinnett High School, Britt Elementary, Snellville City Hall, a public library, churches, office buildings, and Northside Urgent Care.</p>
+      <div class="map-wrapper">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3313.1539949862627!2d-84.01824392429175!3d33.85992197323001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88f5b900299e4ead%3A0x604ef90b20e967ac!2sThe%20Grove%20at%20Towne%20Center!5e0!3m2!1sen!2sus!4v1780350030801!5m2!1sen!2sus"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+      <p class="map-caption">The Grove at Towne Center, Snellville, Georgia — between Oak Road, Wisteria Drive, North Road, and Clower Street.</p>
+    </div>
+  </div>
+
+  <!-- FIELDWORK -->
+  <section id="fieldwork" class="fade-in">
+    <p class="section-label">Primary Research</p>
+    <h2>What I found on a quiet morning</h2>
+    <p>I visited The Grove on a weekday morning. The weather was warm and overcast, and because of the early hour, the space was mostly quiet. Not many people were outside yet, which actually worked in my favor. Without a crowd to focus on, I was able to slow down and pay closer attention to the space itself — the layout, the design choices, and what everything was set up to do.</p>
+    <p>When there is not much going on, you notice the space more than the people. Everything is clean, modern, nothing looks temporary or cheap. The library and the coworking space beside it are almost entirely glass on the outside — big floor-to-ceiling panels that let light in even on a gray morning. You can see right through to the inside from the sidewalk.</p>
+    <p>The green lawn in the middle is where everything comes together. It is wide and open with benches and trees around the edges, and what struck me was how the restaurants and shops do not just sit around it but actually connect to it. Stairs off the lawn lead directly up to Parkside at the Grove. The taqueria opens right onto it too. You are not walking from one thing to another — you are moving through one continuous space.</p>
+
+    <div class="pullquote">
+      <p>"Mixed-use developments have several benefits for communities, however due to the complexity of these developments, several challenges arise in the planning and development phases."</p>
+      <cite>Metzinger, Frontiers in Built Environment (2021)</cite>
+    </div>
+
+    <p>A few people were already out on the lawn. A woman reading by herself on a bench. Some moms with their kids at the water fountains — the kind you can run through — and the kids were soaked even though it was barely mid-morning. You do not see that at a strip mall. People were not there to buy something and leave. They were just there.</p>
+    <p>The food hall is one of the main anchors. The range is real: Mediterranean, Philly cheesesteaks, pizza, a mac and cheese restaurant, a brewery, a butcher shop. My one criticism was the lighting inside. It is too dim. Coming in from the bright outdoor courtyard, the interior feels noticeably flat. Above the food hall, office and retail spaces occupy the upper floors — still filling in, with more restaurants on the way.</p>
+  </section>
+
+  <!-- PHOTO SECTION -->
+  <div class="photo-section full-bleed fade-in">
+    <div class="inner">
+      <p class="section-label">Documentation</p>
+      <h2>From the field</h2>
+      <p>Add your photos from the visit below. Replace each placeholder by uploading your images directly into this file.</p>
+      <div class="photo-grid">
+        <div class="photo-item tall" style="overflow:hidden;">
+          <img src="IMG_3043.jpg" alt="The green lawn at The Grove" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="photo-item" style="overflow:hidden;aspect-ratio:4/3;">
+          <img src="IMG_3037.jpg" alt="Gwinnett County Public Library at The Grove" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="photo-item" style="overflow:hidden;aspect-ratio:4/3;">
+          <img src="IMG_3050.jpg" alt="Towne Center Market Food Hall" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="photo-item" style="overflow:hidden;aspect-ratio:4/3;">
+          <img src="IMG_3048.jpg" alt="Northside Snellville building across from The Grove" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="photo-item" style="overflow:hidden;aspect-ratio:4/3;">
+          <img src="IMG_3044.jpg" alt="Stairs leading up to Parkside at The Grove" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="photo-item" style="overflow:hidden;aspect-ratio:4/3;">
+          <img src="IMG_3038.jpg" alt="The Tomlin apartments and public parking at The Grove" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERVIEW -->
+  <section id="interview" class="interview-section fade-in">
+    <p class="section-label">Community Voice</p>
+    <h2>Twenty years in Snellville</h2>
+    <p>During my visit I spoke with Kayla, a Snellville resident of twenty years. Her perspective cuts to the heart of what this research is trying to understand.</p>
+
+    <div class="interview-card">
+      <p>She described the city before The Grove as boring — with little to do and no real destination nearby. If she wanted food or anything to do, she had to get on Scenic Highway, which she described as a frustrating and congested drive she tried to avoid. The Grove changed that. It gave her somewhere close that she actually wanted to go.</p>
+      <p class="interviewee">Kayla — Snellville resident, 20 years</p>
+    </div>
+
+    <div class="qa-block">
+      <p class="question">Does The Grove feel like a community space or a commercial one?</p>
+      <div class="answer">
+        <p>Community, without hesitation. She pointed to the outdoor areas, the greenery, and the open seating as what made it feel that way. Not the shops — the space itself.</p>
+      </div>
+    </div>
+
+    <div class="qa-block">
+      <p class="question">Has it helped Snellville economically?</p>
+      <div class="answer">
+        <p>She believed it had. Businesses opening, foot traffic increasing, money staying in the city rather than going somewhere else.</p>
+      </div>
+    </div>
+
+    <div class="qa-block">
+      <p class="question">Did residents have a voice in how this was built?</p>
+      <div class="answer">
+        <p>She said no, not really. She found out The Grove was happening through a news article — not from the city. Council meetings happened and the information was technically available, but it never reached her. That distinction matters: public input was offered, but it was not brought to people like Kayla.</p>
+      </div>
+    </div>
+
+    <div class="pullquote" style="margin-top: 2.5rem;">
+      <p>"The PPP option in urban regeneration projects encounters many obstacles related to high investment risk, low financial and social return, and the numerous sources of uncertainty."</p>
+      <cite>Vale de Paula et al., Journal of Urban Planning and Development (2023)</cite>
+    </div>
+
+    <p>Kayla's answer about the planning process is the most thought-provoking part of this research so far. A development can feel like community and still have been built without the full community at the table. Both of those things can be true at the same time, and that tension is what this project is trying to understand.</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- SOURCES -->
+  <section id="sources" class="sources-section fade-in">
+    <p class="section-label">Secondary Research</p>
+    <h2>Sources</h2>
+
+    <div class="source-item">
+      <p class="source-title">Complete Community: Planning Theory From Practice</p>
+      <p class="source-meta">Jill L. Grant &nbsp;&bull;&nbsp; Journal of the American Planning Association, vol. 90, no. 2, Apr. 2024, pp. 213–29 &nbsp;&bull;&nbsp; doi:10.1080/01944363.2023.2207619</p>
+      <p>Grant examines the "complete community" concept — the planning idea behind developments like The Grove — and argues that planners and city governments have used this language as a political tool to build support for denser, mixed-use development. Her framework is central to analyzing how Snellville has publicly described The Grove and whether that description holds up against what residents actually experience.</p>
+    </div>
+
+    <div class="source-item">
+      <p class="source-title">Differences in Experiences With the Development of Mixed-Use Projects From 2004 and 2017</p>
+      <p class="source-meta">Jamie Metzinger &nbsp;&bull;&nbsp; Frontiers in Built Environment, vol. 7, art. 734149, 23 Sept. 2021 &nbsp;&bull;&nbsp; doi:10.3389/fbuil.2021.734149</p>
+      <p>Metzinger's survey of developers and construction managers documents how the main obstacles to mixed-use development — zoning, financing, community opposition, market demand — shifted between 2004 and 2017. His finding that no universal best-practice model exists helps explain why The Grove took nearly twenty years from early planning discussions to breaking ground in 2021.</p>
+    </div>
+
+    <div class="source-item">
+      <p class="source-title">Public–Private Partnerships in Urban Regeneration Projects: A Review</p>
+      <p class="source-meta">Paula Vale de Paula et al. &nbsp;&bull;&nbsp; Journal of Urban Planning and Development, vol. 149, no. 1, Mar. 2023 &nbsp;&bull;&nbsp; doi:10.1061/JUPDDM.UPENG-4144</p>
+      <p>This systematic literature review surveys research on public-private partnerships in urban redevelopment and identifies recurring problems around long-term accountability, financing risk, and governance. It provides the structural framework for asking who is ultimately responsible for The Grove — and what happens to the community if priorities shift after the development is complete.</p>
+    </div>
+  </section>
+
+
+  <!-- COMMENTS -->
+  <section id="comments" class="fade-in" style="background:var(--white);">
+    <p class="section-label">Community</p>
+    <h2>Share your thoughts</h2>
+    <p style="margin-bottom:2rem;">Have you visited The Grove? Do you live in Snellville? Leave a comment below.</p>
+
+    <div style="margin-bottom:2.5rem;">
+      <div style="display:flex;flex-direction:column;gap:0.8rem;">
+        <input id="comment-name" type="text" placeholder="Your name" style="
+          font-family: Source Serif 4, Georgia, serif;
+          font-size: 0.95rem;
+          padding: 0.8rem 1rem;
+          border: 1px solid var(--sand);
+          background: var(--cream);
+          color: var(--ink);
+          outline: none;
+          width: 100%;
+        ">
+        <textarea id="comment-text" placeholder="What do you think about The Grove? Does it feel like a community space to you?" rows="4" style="
+          font-family: Source Serif 4, Georgia, serif;
+          font-size: 0.95rem;
+          padding: 0.8rem 1rem;
+          border: 1px solid var(--sand);
+          background: var(--cream);
+          color: var(--ink);
+          outline: none;
+          resize: vertical;
+          width: 100%;
+        "></textarea>
+        <button onclick="postComment()" style="
+          align-self: flex-start;
+          background: var(--forest);
+          color: var(--cream);
+          border: none;
+          padding: 0.75rem 2rem;
+          font-family: Source Serif 4, Georgia, serif;
+          font-size: 0.85rem;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          cursor: pointer;
+          transition: background 0.2s;
+        " onmouseover="this.style.background='#1d3a1d'" onmouseout="this.style.background='var(--forest)'">Post Comment</button>
+      </div>
+      <p id="comment-error" style="color:var(--rust);font-size:0.85rem;margin-top:0.5rem;display:none;">Please enter your name and a comment.</p>
+    </div>
+
+    <div id="comments-list" style="display:flex;flex-direction:column;gap:1.2rem;"></div>
+    <p id="no-comments" style="color:#888;font-style:italic;font-size:0.95rem;">No comments yet. Be the first to share your thoughts.</p>
+  </section>
+
+  <script>
+    function loadComments() {
+      const comments = JSON.parse(localStorage.getItem('grove-comments') || '[]');
+      const list = document.getElementById('comments-list');
+      const none = document.getElementById('no-comments');
+      list.innerHTML = '';
+      if (comments.length === 0) {
+        none.style.display = 'block';
+        return;
+      }
+      none.style.display = 'none';
+      comments.slice().reverse().forEach(c => {
+        const el = document.createElement('div');
+        el.style.cssText = 'padding:1.4rem;border-left:3px solid var(--sage);background:var(--cream);';
+        el.innerHTML = `
+          <p style="font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--sage);margin-bottom:0.4rem;">${escHtml(c.name)} &nbsp;&bull;&nbsp; ${c.date}</p>
+          <p style="margin:0;color:var(--ink);line-height:1.7;">${escHtml(c.text)}</p>
+        `;
+        list.appendChild(el);
+      });
+    }
+
+    function escHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function postComment() {
+      const name = document.getElementById('comment-name').value.trim();
+      const text = document.getElementById('comment-text').value.trim();
+      const err = document.getElementById('comment-error');
+      if (!name || !text) { err.style.display = 'block'; return; }
+      err.style.display = 'none';
+      const comments = JSON.parse(localStorage.getItem('grove-comments') || '[]');
+      const now = new Date();
+      comments.push({
+        name,
+        text,
+        date: now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+      });
+      localStorage.setItem('grove-comments', JSON.stringify(comments));
+      document.getElementById('comment-name').value = '';
+      document.getElementById('comment-text').value = '';
+      loadComments();
+    }
+
+    loadComments();
+  </script>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Jonathan Bell &nbsp;&bull;&nbsp; ENG 1101 &nbsp;&bull;&nbsp; Professor Barattin &nbsp;&bull;&nbsp; May 2026</p>
+    <p>Georgia State University &nbsp;&bull;&nbsp; Digital Heritage Ethnography</p>
+    <p style="margin-top: 1rem;">The Grove at Towne Center, Snellville, Georgia</p>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
